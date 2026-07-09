@@ -15,7 +15,10 @@ const sidebars = {
       items: [
         'apex/sharing-security',
         'apex/triggers',
+        'apex/trigger-scenarios',
         'apex/async-apex',
+        'apex/callout-after-dml',
+        'apex/json-patterns',
         'apex/governor-limits',
         'apex/test-classes',
       ],
@@ -26,6 +29,7 @@ const sidebars = {
       items: [
         'lwc/basics',
         'lwc/wire-and-events',
+        'lwc/advanced-patterns',
         'lwc/platform-events',
       ],
     },
@@ -54,6 +58,7 @@ const sidebars = {
         'cpq-billing/discount-schedules',
         'cpq-billing/quote-to-order',
         'cpq-billing/billing-model',
+        'cpq-billing/billing-advanced',
         'cpq-billing/revenue-recognition',
       ],
     },
@@ -63,6 +68,8 @@ const sidebars = {
       items: [
         'psa-certinia/overview',
         'psa-certinia/rate-cards',
+        'psa-certinia/services-estimator',
+        'psa-certinia/project-financials',
         'psa-certinia/revenue-recognition',
       ],
     },
@@ -72,6 +79,8 @@ const sidebars = {
       items: [
         'architecture/data-modeling',
         'architecture/deployment-devops',
+        'architecture/design-decisions',
+        'architecture/flow-trigger-security',
         'architecture/omnistudio',
         'architecture/safe-agile',
       ],
