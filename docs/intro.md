@@ -10,7 +10,7 @@ A personal knowledge base for Salesforce development — Apex, LWC, integrations
 
 ## How to use this
 
-Use the **search bar** (top right) to find anything by keyword. Type "pricing waterfall", "JWT Bearer", "sharing", "triggers" — it searches across all pages instantly.
+Use the **search bar** (top right) to find anything by keyword. Type "pricing waterfall", "JWT Bearer", "sharing", "triggers", "PKCE" — it searches across all pages instantly.
 
 Or browse by topic using the sidebar on the left.
 
@@ -18,14 +18,15 @@ Or browse by topic using the sidebar on the left.
 
 | Area | What's inside |
 |------|--------------|
-| [Apex](apex/sharing-security) | Sharing model, triggers, async Apex, governor limits, test classes |
+| [Apex](apex/sharing-security) | Sharing model, triggers, async Apex, governor limits, test classes, Summer '26 changes |
 | [LWC](lwc/basics) | Wire service, events, platform events |
-| [Integrations](integrations/oauth-flows) | OAuth flows, Named Credentials, Jira/Workday examples, SOAP |
-| [CPQ & Billing](cpq-billing/pricing-waterfall) | Pricing waterfall, product/price rules, discount schedules, quote-to-order, billing model |
+| [Integrations](integrations/oauth-flows) | OAuth flows, Named Credentials, Jira/Workday/HubSpot/ServiceNow/SharePoint examples, SOAP, MuleSoft |
+| [CPQ & Billing](cpq-billing/revenue-cloud) | Revenue Cloud vs CPQ, pricing waterfall, product/price rules, discount schedules, quote-to-order, billing |
 | [PSA / Certinia](psa-certinia/overview) | Rate cards, revenue recognition |
-| [Architecture](architecture/data-modeling) | Data modeling, deployment patterns |
+| [Architecture](architecture/data-modeling) | Data modeling, deployment, OmniStudio/Industries Clouds, SAFe Agile |
 | [DevOps & Copado](devops-copado/copado-overview) | Copado, CI/CD patterns |
 | [Territory Management](territory-mgmt/overview) | Enterprise Territory Management (ETM) |
+| [My Apps](projects/index) | Flow Health, Flow Modernizer, CPQ Navigator, PSA Navigator |
 
 ## Adding new content
 

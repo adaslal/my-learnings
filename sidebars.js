@@ -38,12 +38,17 @@ const sidebars = {
         'integrations/jira-example',
         'integrations/workday-example',
         'integrations/soap',
+        'integrations/mulesoft',
+        'integrations/hubspot',
+        'integrations/servicenow',
+        'integrations/sharepoint',
       ],
     },
     {
       type: 'category',
       label: 'CPQ & Billing',
       items: [
+        'cpq-billing/revenue-cloud',
         'cpq-billing/pricing-waterfall',
         'cpq-billing/product-price-rules',
         'cpq-billing/discount-schedules',
@@ -67,6 +72,8 @@ const sidebars = {
       items: [
         'architecture/data-modeling',
         'architecture/deployment-devops',
+        'architecture/omnistudio',
+        'architecture/safe-agile',
       ],
     },
     {
@@ -82,6 +89,13 @@ const sidebars = {
       label: 'Territory Management',
       items: [
         'territory-mgmt/overview',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'My Apps',
+      items: [
+        'projects/index',
       ],
     },
   ],
