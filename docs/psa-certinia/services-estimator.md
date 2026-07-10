@@ -96,3 +96,8 @@ Generates estimate documents (PDFs, Word). Enabled via Feature Console, requires
 
 **Q: Can you have multiple projects from one estimate?**
 > Yes — one PSA project is created per Estimate Product. If the estimate has two products (e.g., "Phase 1 Implementation" and "Training"), you get two separate PSA projects from a single estimate approval.
+
+## References
+
+- [Services Estimator — Your Strategic Advantage (AblyrPro)](https://ablypro.com/certinia-services-estimator-your-strategic-advantage-for-accurate-estimates-and-smooth-project-delivery) — in-depth breakdown of SE's data structure, workflow, and value proposition
+- [Services Estimator Video Demo (LinkedIn — Illustre Software)](https://www.linkedin.com/posts/illustre-software_salesforce-certinia-serviceestimator-activity-7445556155361406976-oNb0/) — visual walkthrough of the full Estimate → Push to Opportunity → Create Project flow
