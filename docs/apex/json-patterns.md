@@ -40,15 +40,35 @@ String cleanJson = JSON.serialize(payload, true);  // second param = suppressNul
 
 ---
 
-## JSON.deserialize()
+## JSON.deserialize() vs JSON.deserializeUntyped() — side by side
+
+This is the decision that trips people up most often. Same input, completely different output and usage pattern.
+
+**Same JSON used in both examples:**
+```json
+{
+  "orderId": "ORD-001",
+  "amount": 1500.00,
+  "status": "Pending",
+  "lines": [
+    { "sku": "PROD-A", "qty": 3 },
+    { "sku": "PROD-B", "qty": 1 }
+  ]
+}
+```
+
+---
+
+### JSON.deserialize() — typed, dot-notation access
+
+Define an Apex class that mirrors the JSON shape. Salesforce maps field-by-field automatically. You get full dot-notation access (`result.orderId`, `result.lines[0].sku`).
 
 ```apex
-// Use when you know the exact JSON shape — define a matching Apex class
-// Field name matching is CASE-INSENSITIVE
-
-public class ErpResponse {
+// Step 1: define a class that mirrors the JSON shape
+public class OrderResponse {
+    public String orderId;
+    public Decimal amount;
     public String status;
-    public String transactionId;
     public List<LineItem> lines;
 
     public class LineItem {
@@ -57,54 +77,109 @@ public class ErpResponse {
     }
 }
 
-String responseBody = res.getBody();
-ErpResponse result = (ErpResponse) JSON.deserialize(responseBody, ErpResponse.class);
-String txId = result.transactionId;
+// Step 2: one line to parse
+OrderResponse result = (OrderResponse) JSON.deserialize(responseBody, OrderResponse.class);
+
+// Step 3: use it like a normal Apex object
+System.debug(result.orderId);           // ORD-001
+System.debug(result.amount);            // 1500.00
+System.debug(result.lines[0].sku);      // PROD-A
+System.debug(result.lines[0].qty);      // 3
+
+// Loop over lines cleanly
+for (OrderResponse.LineItem line : result.lines) {
+    System.debug(line.sku + ' × ' + line.qty);
+}
 ```
 
-**DANGER:** Always wrap in try/catch — a malformed response throws `JSONException` and kills your transaction:
+**Field name matching is CASE-INSENSITIVE** — `orderId` in JSON matches `orderId`, `OrderId`, or `ORDERID` in your Apex class. This forgives minor casing differences from the API.
+
+**DANGER:** Always wrap in try/catch — a malformed response throws `JSONException` and kills the transaction:
 
 ```apex
 try {
-    ErpResponse result = (ErpResponse) JSON.deserialize(responseBody, ErpResponse.class);
+    OrderResponse result = (OrderResponse) JSON.deserialize(responseBody, OrderResponse.class);
 } catch (JSONException e) {
-    throw new IntegrationException('Malformed ERP response: ' + e.getMessage());
+    throw new IntegrationException('Malformed response: ' + e.getMessage());
 }
 ```
 
 ---
 
-## JSON.deserializeUntyped()
+### JSON.deserializeUntyped() — untyped, map/cast navigation
+
+No class needed. Returns `Map<String,Object>` for JSON objects, `List<Object>` for JSON arrays. You navigate by key and cast every value manually.
 
 ```apex
-// Use when:
-// - JSON structure is unknown at compile time
-// - JSON contains Apex reserved words (type, class, abstract, etc.)
-// - Structure varies by response type
+// One line to parse — no class required
+Map<String,Object> result = (Map<String,Object>) JSON.deserializeUntyped(responseBody);
 
-Map<String,Object> body = (Map<String,Object>) JSON.deserializeUntyped(res.getBody());
+// Access top-level fields — must cast every value
+String orderId = (String)  result.get('orderId');   // ORD-001
+Decimal amount  = (Decimal) result.get('amount');    // 1500.00
+String status   = (String)  result.get('status');    // Pending
 
-// Navigate nested objects:
-Map<String,Object> data = (Map<String,Object>) body.get('data');
-String status = (String) data.get('status');
-
-// Navigate arrays:
-List<Object> items = (List<Object>) body.get('items');
-for (Object item : items) {
-    Map<String,Object> itemMap = (Map<String,Object>) item;
-    String sku = (String) itemMap.get('sku');
-    Integer qty = (Integer) itemMap.get('qty');
+// Navigate the nested array
+List<Object> lines = (List<Object>) result.get('lines');
+for (Object lineObj : lines) {
+    Map<String,Object> line = (Map<String,Object>) lineObj;
+    String sku = (String)  line.get('sku');
+    Integer qty = (Integer) line.get('qty');
+    System.debug(sku + ' × ' + qty);
 }
 ```
 
-### Handling Apex reserved words in JSON
+The extra casting everywhere is the tradeoff — you get flexibility without needing a class, but every value comes out as `Object` and must be cast to the right type before you can use it.
 
-If the API returns a field called `type` or `class` (Apex reserved words), `JSON.deserialize()` fails. Use `deserializeUntyped()` and navigate manually:
+---
+
+### Head-to-head comparison
+
+| | `JSON.deserialize()` | `JSON.deserializeUntyped()` |
+|--|----------------------|-----------------------------|
+| **Requires Apex class** | Yes — must match JSON shape | No |
+| **Access style** | Dot-notation: `result.lines[0].sku` | Cast + get: `(String) line.get('sku')` |
+| **Type safety** | Compile-time — wrong type = compile error | Runtime — wrong cast = `ClassCastException` |
+| **JSON structure must be known** | Yes | No — works with any shape |
+| **Apex reserved words in JSON** | Fails (`type`, `class`, etc.) | Works fine — keys are just strings |
+| **Structure varies by response** | Fails — fixed class shape | Works — navigate conditionally |
+| **Verbosity** | Low — clean dot-notation | High — cast on every access |
+| **Use when** | You control or know the API shape | External/unpredictable API, or JSON has reserved-word keys |
+
+---
+
+### When reserved words break deserialize()
+
+If the API returns a field called `type`, `class`, or `abstract` (Apex reserved words), `JSON.deserialize()` throws a compile error because you can't declare a class field with those names. `deserializeUntyped()` has no problem — map keys are just strings:
 
 ```apex
-Map<String,Object> parsed = (Map<String,Object>) JSON.deserializeUntyped(body);
-String recordType = (String) parsed.get('type');   // "type" as a map key is fine
+// This JSON would break JSON.deserialize() — "type" is an Apex reserved word
+// { "id": "001", "type": "Customer", "class": "Premium" }
+
+// deserializeUntyped() handles it fine
+Map<String,Object> parsed = (Map<String,Object>) JSON.deserializeUntyped(responseBody);
+String recordType  = (String) parsed.get('type');   // Customer
+String tierClass   = (String) parsed.get('class');  // Premium
 ```
+
+### When the structure varies at runtime
+
+Some APIs return different shapes based on a status field — `deserializeUntyped()` lets you branch on the structure after parsing:
+
+```apex
+Map<String,Object> parsed = (Map<String,Object>) JSON.deserializeUntyped(responseBody);
+String status = (String) parsed.get('status');
+
+if (status == 'success') {
+    Map<String,Object> data = (Map<String,Object>) parsed.get('data');
+    // handle success shape
+} else {
+    String errorCode = (String) parsed.get('errorCode');
+    // handle error shape
+}
+```
+
+You can't do this with `deserialize()` — it expects one fixed class shape.
 
 ---
 
