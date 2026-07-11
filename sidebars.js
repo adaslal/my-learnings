@@ -46,6 +46,7 @@ const sidebars = {
         'integrations/hubspot',
         'integrations/servicenow',
         'integrations/sharepoint',
+        'integrations/s2s-client-credentials',
       ],
     },
     {
