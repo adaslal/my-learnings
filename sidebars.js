@@ -21,6 +21,7 @@ const sidebars = {
         'apex/json-patterns',
         'apex/governor-limits',
         'apex/test-classes',
+        'apex/code-review',
       ],
     },
     {
@@ -47,6 +48,10 @@ const sidebars = {
         'integrations/servicenow',
         'integrations/sharepoint',
         'integrations/s2s-client-credentials',
+        'integrations/concur',
+        'integrations/spotify',
+        'integrations/loqate',
+        'integrations/google-sheets',
       ],
     },
     {
@@ -54,6 +59,7 @@ const sidebars = {
       label: 'CPQ & Billing',
       items: [
         'cpq-billing/revenue-cloud',
+        'cpq-billing/rlm-architecture',
         'cpq-billing/pricing-waterfall',
         'cpq-billing/product-price-rules',
         'cpq-billing/discount-schedules',
