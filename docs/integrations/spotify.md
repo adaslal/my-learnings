@@ -6,6 +6,10 @@ title: Spotify Integration (Client Credentials)
 
 Calls the Spotify Web API from Apex using OAuth 2.0 Client Credentials — no user login required. Also demonstrates a **direct `fetch()` from LWC JavaScript**, which works for public APIs that have CORS headers.
 
+:::info Want per-user data and playback control instead?
+This page covers **public data only** (Client Credentials — no user login). For a full user-context build — search, the user's own playlists, recently played, and Spotify Connect playback control (play/pause/skip on their phone or desktop) — see [Spotify Player (User OAuth + Spotify Connect)](./spotify-player.md).
+:::
+
 ---
 
 ## Two callout approaches — know both

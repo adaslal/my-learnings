@@ -50,6 +50,7 @@ const sidebars = {
         'integrations/s2s-client-credentials',
         'integrations/concur',
         'integrations/spotify',
+        'integrations/spotify-player',
         'integrations/loqate',
         'integrations/google-sheets',
       ],
